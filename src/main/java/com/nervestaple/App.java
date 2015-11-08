@@ -1,8 +1,7 @@
 package com.nervestaple;
 
 /**
- * Hello world!
- *
+ * Bootstraps our exciting tip calculator.
  */
 public class App 
 {
