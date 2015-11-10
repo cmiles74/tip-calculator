@@ -1,4 +1,4 @@
-package com.nervestaple;
+package com.nervestaple.tipcalculator;
 
 import java.math.BigDecimal;
 import java.util.logging.Logger;
@@ -153,8 +153,11 @@ public class TipModel {
         boolean value = isValid();
 
         if(isValid()) {
-            setTotalTip(getTotalBill().multiply(getTipPercentage()).setScale(2, BigDecimal.ROUND_HALF_UP));
+
+            setTotalTip(getTotalBill().multiply(getTipPercentage().setScale(2, BigDecimal.ROUND_HALF_UP)));
+            log.info("Total Tip: " + getTotalBill().multiply(getTipPercentage().setScale(2, BigDecimal.ROUND_HALF_UP)));
             setTipPerPerson(getTotalTip().divide(new BigDecimal(getPeople())).setScale(2, BigDecimal.ROUND_HALF_UP));
+            log.info("Tip Per Person: " + getTotalTip().divide(new BigDecimal(getPeople())).setScale(2, BigDecimal.ROUND_HALF_UP));
             setTotalBillWithTip(getTotalBill().add(getTotalTip()));
         }
 
@@ -167,11 +170,11 @@ public class TipModel {
     private void validate() {
         StringBuilder errorMessageBuillder = new StringBuilder();
 
-        if(getPeople() == null && getPeople() < 1) {
+        if(getPeople() == null || getPeople() < 1) {
             errorMessageBuillder.append("Someone needs to tip, figure it out.");
         }
 
-        if(getTipPercentage() == null && getTipPercentage().compareTo(new BigDecimal(0.01)) >= 0) {
+        if(getTipPercentage() == null || getTipPercentage().compareTo(new BigDecimal(0.01)) <= 0) {
             if(errorMessageBuillder.length() > 0) {
                 errorMessageBuillder.append("\n\r");
             }
@@ -179,7 +182,7 @@ public class TipModel {
             errorMessageBuillder.append("So cheap! You need to tip something!");
         }
 
-        if(getTotalBill() == null && getTotalBill().compareTo(new BigDecimal(0L)) > 0) {
+        if(getTotalBill() == null || getTotalBill().compareTo(new BigDecimal(0L)) < 0) {
             if(errorMessageBuillder.length() > 0) {
                 errorMessageBuillder.append("\n\r");
             }
