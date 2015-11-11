@@ -1,6 +1,7 @@
 package com.nervestaple.tipcalculator;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.logging.Logger;
 
 /**
@@ -155,9 +156,8 @@ public class TipModel {
         if(isValid()) {
 
             setTotalTip(getTotalBill().multiply(getTipPercentage().setScale(2, BigDecimal.ROUND_HALF_UP)));
-            log.info("Total Tip: " + getTotalBill().multiply(getTipPercentage().setScale(2, BigDecimal.ROUND_HALF_UP)));
-            setTipPerPerson(getTotalTip().divide(new BigDecimal(getPeople())).setScale(2, BigDecimal.ROUND_HALF_UP));
-            log.info("Tip Per Person: " + getTotalTip().divide(new BigDecimal(getPeople())).setScale(2, BigDecimal.ROUND_HALF_UP));
+            setTipPerPerson(getTotalTip().divide(new BigDecimal(getPeople()), RoundingMode.HALF_UP)
+                    .setScale(2, BigDecimal.ROUND_HALF_UP));
             setTotalBillWithTip(getTotalBill().add(getTotalTip()));
         }
 
@@ -171,7 +171,7 @@ public class TipModel {
         StringBuilder errorMessageBuillder = new StringBuilder();
 
         if(getPeople() == null || getPeople() < 1) {
-            errorMessageBuillder.append("Someone needs to tip, figure it out.");
+            errorMessageBuillder.append("At least one person needs to tip");
         }
 
         if(getTipPercentage() == null || getTipPercentage().compareTo(new BigDecimal(0.01)) <= 0) {
@@ -179,7 +179,7 @@ public class TipModel {
                 errorMessageBuillder.append("\n\r");
             }
 
-            errorMessageBuillder.append("So cheap! You need to tip something!");
+            errorMessageBuillder.append("A tip percentage is required");
         }
 
         if(getTotalBill() == null || getTotalBill().compareTo(new BigDecimal(0L)) < 0) {
@@ -187,7 +187,7 @@ public class TipModel {
                 errorMessageBuillder.append("\n\r");
             }
 
-            errorMessageBuillder.append("Did you eat or not? I need to know the total bill.");
+            errorMessageBuillder.append("The total bill is required");
         }
 
         setErrorMessage(errorMessageBuillder.toString());

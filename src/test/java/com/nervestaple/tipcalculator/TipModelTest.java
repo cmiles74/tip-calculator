@@ -43,6 +43,7 @@ public class TipModelTest extends TestCase {
         model.setTotalBill(new BigDecimal(10L));
         model.setPeople(2);
         model.setTipPercentage(new BigDecimal(0.2));
+        model.calculateTip();
         log.info("Value: " + model);
         assertTrue(model.getTotalTip().compareTo(new BigDecimal(2L)) == 0);
     }

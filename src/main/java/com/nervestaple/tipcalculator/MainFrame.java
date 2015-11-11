@@ -1,4 +1,4 @@
-package com.nervestaple.tipcalculator.gui;
+package com.nervestaple.tipcalculator;
 
 import com.nervestaple.tipcalculator.TipModel;
 
@@ -24,11 +24,9 @@ public class MainFrame extends JFrame {
     // gui components
     private JLabel labelBill = new JLabel("Bill");
     private JLabel labelTipPercent = new JLabel("Tip %");
-    private JLabel labelPeople = new JLabel("Number of People");
+    private JLabel labelPeople = new JLabel("People");
     private JLabel labelTip = new JLabel("Tip/Person");
     private JLabel labelTotal = new JLabel("Total Bill");
-    private JScrollPane scrollPaneError = new JScrollPane();
-    private JTextArea textAreaError = new JTextArea(3, 100);
     private JFormattedTextField textFieldBill;
     private JFormattedTextField textFieldTipPercent = new JFormattedTextField(NumberFormat.getIntegerInstance());
     private JFormattedTextField textFieldPeople = new JFormattedTextField(NumberFormat.getIntegerInstance());
@@ -39,53 +37,45 @@ public class MainFrame extends JFrame {
     // models
     private TipModel tipModel = new TipModel();
 
+    /**
+     * Creates a new Swing frame.
+     *
+     * @param title Title for the frame
+     */
     public MainFrame(String title) {
         super();
-
         setTitle(title);
 
+        // setup our input fields
         NumberFormat formatMoneyInput = NumberFormat.getInstance();
         formatMoneyInput.setMaximumFractionDigits(2);
         textFieldBill = new JFormattedTextField(formatMoneyInput);
+        textFieldBill.setColumns(5);
+        textFieldBill.setHorizontalAlignment(SwingConstants.RIGHT);
+        textFieldTipPercent.setColumns(5);
+        textFieldTipPercent.setHorizontalAlignment(SwingConstants.RIGHT);
+        textFieldPeople.setColumns(5);
+        textFieldPeople.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        textAreaError.setWrapStyleWord(true);
+        // setup our output fields
+        Font font = textFieldTip.getFont();
+        Font bigBoldFont = new Font(font.getName(), Font.BOLD, font.getSize() + 4);
+        textFieldTip.setEditable(false);
+        textFieldTip.setFont(bigBoldFont);
+        textFieldTip.setBorder(new EmptyBorder(0, 0, 0, 0));
+        textFieldTotal.setEditable(false);
+        textFieldTotal.setFont(bigBoldFont);
+        textFieldTotal.setBorder(new EmptyBorder(0, 0, 0, 0));
+        textFieldTotal.setColumns(5);
 
-        scrollPaneError.add(textAreaError);
-        scrollPaneError.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPaneError.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        //scrollPaneError.setBorder(new EmptyBorder(0, 0, 0, 0));
-
+        // calculate the tip when the button is clicked
         buttonCalculate.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-
-                if (textFieldBill.getValue() != null) {
-                    tipModel.setTotalBill(new BigDecimal(textFieldBill.getValue().toString()));
-                } else {
-                    tipModel.setTotalBill(null);
-                }
-
-                if (textFieldTipPercent.getValue() != null) {
-                    tipModel.setTipPercentage(new BigDecimal(textFieldTipPercent.getValue().toString())
-                            .multiply(new BigDecimal(0.01)));
-                } else {
-                    tipModel.setTipPercentage(null);
-                }
-
-                if (textFieldPeople.getValue() != null) {
-                    tipModel.setPeople(Integer.valueOf(textFieldPeople.getValue().toString()));
-                } else {
-                    tipModel.setPeople(null);
-                }
-
-                tipModel.calculateTip();
-                textFieldTip.setValue(tipModel.getTipPerPerson());
-                textFieldTotal.setValue(tipModel.getTotalBillWithTip());
-                textAreaError.setText(tipModel.getErrorMessage());
-                pack();
-                log.info("TipModel: " + tipModel);
+                calculateTip();
             }
         });
 
+        // layout our components
         Box boxLeft = Box.createVerticalBox();
         boxLeft.add(labelBill);
         boxLeft.add(textFieldBill);
@@ -112,14 +102,7 @@ public class MainFrame extends JFrame {
         boxTop.add(boxRight);
         boxTop.add(Box.createHorizontalStrut(10));
 
-        Box boxError = Box.createHorizontalBox();
-        boxError.add(Box.createHorizontalStrut(10));
-        boxError.add(scrollPaneError);
-        boxError.add(Box.createHorizontalStrut(10));
-
         Box boxMain = Box.createVerticalBox();
-        boxMain.add(Box.createVerticalStrut(10));
-        boxMain.add(boxError);
         boxMain.add(Box.createVerticalStrut(10));
         boxMain.add(boxTop);
         boxMain.add(Box.createVerticalStrut(10));
@@ -128,5 +111,40 @@ public class MainFrame extends JFrame {
 
         getContentPane().add(boxMain);
         pack();
+        setResizable(false);
+
+        // fill in some data to hint the customer
+        textFieldBill.setValue(100.00);
+        textFieldTipPercent.setValue(20);
+        textFieldPeople.setValue(1);
+        calculateTip();
+    }
+
+    /**
+     * Calculates the tip and updates the output fields.
+     */
+    private void calculateTip() {
+        if (textFieldBill.getValue() != null) {
+            tipModel.setTotalBill(new BigDecimal(textFieldBill.getValue().toString()));
+        } else {
+            tipModel.setTotalBill(null);
+        }
+
+        if (textFieldTipPercent.getValue() != null) {
+            tipModel.setTipPercentage(new BigDecimal(textFieldTipPercent.getValue().toString())
+                    .multiply(new BigDecimal(0.01)));
+        } else {
+            tipModel.setTipPercentage(null);
+        }
+
+        if (textFieldPeople.getValue() != null) {
+            tipModel.setPeople(Integer.valueOf(textFieldPeople.getValue().toString()));
+        } else {
+            tipModel.setPeople(null);
+        }
+
+        tipModel.calculateTip();
+        textFieldTip.setValue(tipModel.getTipPerPerson());
+        textFieldTotal.setValue(tipModel.getTotalBillWithTip());
     }
 }
