@@ -24,7 +24,7 @@ Usage
 You can launch the application by double-clicking the `top-calculator-X.X-SNAPSHOT.jar`, or you can invoke it from the
 command line.
 
-    java -jar top-calculator-X.X-SNAPSHOT.jar
+    java -jar tip-calculator-X.X-SNAPSHOT.jar
 
 Once launched, fill in the amount of your bill, the percentage you'd like to tip and the number of people who will be
 splitting the bill. The application will calculate the tip per person as well as the total size of the bill.
