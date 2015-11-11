@@ -38,7 +38,7 @@ public class App {
         }
 
         // create our main GUI frame
-        final MainFrame mainFrame = new MainFrame("Tip Calculator");
+        final MainFrame mainFrame = new MainFrame("Tips!");
 
         // quit application when the window closes
         mainFrame.addWindowListener(new WindowAdapter() {
