@@ -5,6 +5,8 @@ My friend Shane was taking an introductory Java class and showed me his tip calc
 haven't done any Swing work in a while, so I decided to write one of my own. This tip calculator is loosely based on
 Google's tip calculator, you'll see it if you type "tip calculator" into Google's search.
 
+![Screenshot](https://raw.githubusercontent.com/cmiles74/tip-calculator/master/documentation/screenshot.png)
+
 Building
 --------
 
